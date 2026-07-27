@@ -377,14 +377,16 @@
           card bows out, and the line rises into the space it leaves. */
        filmMM.add('(max-width: 899px)', () => {
         const frame = document.getElementById('film-frame');
-        gsap.set(frame, { scale: 0.84, borderRadius: 18, transformOrigin: '50% 50%' });
+        gsap.set(frame, { scale: 0.9, borderRadius: 18, transformOrigin: '50% 50%' });
 
         const tl = gsap.timeline({
           defaults: { ease: 'power2.inOut' },
           scrollTrigger: {
             trigger: film,
             start: 'top top',
-            end: '+=210%',
+            /* The phone shows a letterboxed 16:9 band, not a full-screen
+               plate — 210% of scrolling made it outstay its welcome. */
+            end: '+=140%',
             pin: true,
             scrub: 1.2,
             anticipatePin: 1,

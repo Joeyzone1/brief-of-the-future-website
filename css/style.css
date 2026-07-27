@@ -512,6 +512,27 @@ body.menu-open .menu-txt-close { transform: translateY(0); opacity: 1; }
   margin: 1rem 0 1.2rem;
 }
 .film-copy p { color: var(--silver); line-height: 1.75; margin-bottom: 1.4rem; }
+/* ── Phones: both background videos are 16:9 masters ─────────────
+   A portrait phone box is 0.46 aspect here and 0.24 over on Services, so
+   object-fit:cover keeps only ~26% and ~13% of each picture respectively —
+   a meaningless zoom into the middle of the frame.
+
+   The film is letterboxed instead: the whole composed shot survives, black
+   bars top and bottom, which is how a 16:9 film is meant to sit on a phone.
+   The Services wash is dropped outright — there is no crop of it worth
+   keeping at 375px, and the gradient below carries the section on its own.
+   Breakpoint matches the matchMedia branch in js/main.js exactly. */
+@media (max-width: 899px) {
+  .film-video { object-fit: contain; }
+
+  .services-bg { display: none; }
+  .services-bgwrap {
+    background:
+      radial-gradient(120% 60% at 50% 0%, rgba(201, 151, 99, 0.10), transparent 70%),
+      linear-gradient(180deg, var(--ink) 0%, #191818 42%, #191818 58%, var(--ink) 100%);
+  }
+}
+
 /* static fallback: mobile & reduced motion — stacked, no pin */
 .film-static { height: auto; }
 .film-static .film-stage { display: none; }
