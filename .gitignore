@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel
+
+# Build output (none today — the site is served as-is)
+dist/
+build/
+.cache/
+
+# Superseded assets kept locally for reference
+assets/_superseded/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log

@@ -1,0 +1,1493 @@
+/* ═══════════════════════════════════════════════════════════════
+   Brief of the Future — Nothin'-grade rebuild
+   Palette: #151515 ink · #C99763 gold · #D8AE7C accent · #8F8A84 muted · #F5F4F2 bone
+   Type:    Archivo (grotesque, wdth axis) · Playfair Display (serif em)
+            IBM Plex Mono (labels)
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --ink: #151515;        /* Background */
+  --ink-2: #1D1D1D;
+  --gold: #C99763;       /* Primary */
+  --gold-hi: #D8AE7C;    /* Accent  */
+  --silver: #8F8A84;     /* Muted   */
+  --muted: #8F8A84;      /* alias of --silver, role-named */
+  --bone: #F5F4F2;       /* Text    */
+  --line: rgba(245, 244, 242, 0.14);
+  --mono: "IBM Plex Mono", monospace;
+  --serif: "Playfair Display", serif;
+  --grot: "Archivo", sans-serif;
+  --ease: cubic-bezier(0.76, 0, 0.24, 1); /* ≈ power4.inOut */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: auto; overflow-x: clip; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+body {
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--grot);
+  font-variation-settings: "wdth" 100;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+body.is-loading { overflow: hidden; }
+body.menu-open { overflow: hidden; }
+
+::selection { background: var(--gold); color: var(--ink); }
+
+a { color: inherit; text-decoration: none; }
+.mono {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold-hi);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  font-variation-settings: "wdth" 87;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+/* Hide native cursor only when custom cursor is active (desktop) */
+@media (hover: hover) and (pointer: fine) {
+  body.cursor-on, body.cursor-on a, body.cursor-on button { cursor: none; }
+}
+
+/* ═══ Preloader ═══ */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loader-inner { text-align: center; }
+.loader-eyebrow { color: var(--gold); display: block; margin-bottom: 2rem; }
+.loader-mark { display: flex; flex-direction: column; gap: 0.1em; }
+.loader-line { display: block; overflow: hidden; }
+.loader-line > span {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(3rem, 9vw, 7rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: 0.04em;
+  color: var(--bone);
+  transform: translateY(110%);
+}
+.loader-line > span.of {
+  font-size: clamp(1.1rem, 3vw, 2.2rem);
+  color: var(--gold);
+  letter-spacing: 0.5em;
+  padding: 0.4em 0;
+}
+.loader-count {
+  position: absolute;
+  right: clamp(1.5rem, 4vw, 4rem);
+  bottom: clamp(1.2rem, 3vw, 3rem);
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: var(--gold);
+  letter-spacing: 0;
+}
+.loader-bar {
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%; height: 2px;
+  background: rgba(245, 244, 242, 0.08);
+}
+.loader-bar span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--gold);
+}
+
+/* ═══ Custom cursor ═══ */
+.cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  z-index: 300;
+  pointer-events: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.35s var(--ease), height 0.35s var(--ease), background 0.35s var(--ease);
+  will-change: transform;
+}
+body.cursor-on .cursor { display: flex; }
+.cursor-label {
+  color: var(--ink);
+  font-size: 0.6rem;
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.25s;
+}
+.cursor.is-hover { width: 44px; height: 44px; background: rgba(216, 174, 124, 0.35); backdrop-filter: blur(2px); }
+.cursor.is-cta { width: 84px; height: 84px; background: var(--gold); }
+.cursor.is-cta .cursor-label { opacity: 1; }
+.cursor.is-row { width: 64px; height: 64px; background: var(--bone); }
+.cursor.is-row .cursor-label { opacity: 1; }
+
+/* ═══ Nav ═══ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem clamp(1.5rem, 4vw, 4rem);
+  transition: transform 0.6s var(--ease);
+}
+.nav.nav-hidden { transform: translateY(-110%); }
+.nav-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  color: var(--bone);
+}
+.nav-logo {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.nav-mark b { color: var(--gold); font-weight: 500; font-size: 0.7em; letter-spacing: 0.2em; }
+.nav-right { display: flex; align-items: center; gap: 2rem; }
+.nav-cta {
+  color: var(--bone);
+  position: relative;
+  padding-bottom: 2px;
+}
+.nav-cta::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%; height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease);
+}
+.nav-cta:hover::after { transform: scaleX(1); transform-origin: left; }
+.nav-menu-btn {
+  /* background / backdrop / bevel come from the liquid-glass rule below. */
+  border: 1px solid rgba(245, 244, 242, 0.22);
+  border-radius: 999px;
+  color: var(--bone);
+  padding: 0 1.2rem;
+  overflow: hidden;
+  position: relative;
+  height: 2.2rem;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.4s var(--ease), transform 0.2s var(--ease);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+.nav-menu-btn:hover { border-color: var(--gold); }
+/* Nothing else owns this button's transform, so it can take the component's
+   own press/lift feel — unlike .btn-ring, where GSAP holds the transform. */
+@media (hover: hover) {
+  .nav-menu-btn:hover { transform: scale(1.05); }
+}
+.nav-menu-btn:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) {
+  .nav-menu-btn,
+  .nav-menu-btn:hover,
+  .nav-menu-btn:active { transform: none; transition: border-color 0.4s var(--ease); }
+}
+.menu-txt, .menu-txt-close {
+  grid-area: 1 / 1;
+  transition: transform 0.5s var(--ease), opacity 0.4s;
+}
+.menu-txt-close { transform: translateY(120%); opacity: 0; }
+body.menu-open .menu-txt { transform: translateY(-120%); opacity: 0; }
+body.menu-open .menu-txt-close { transform: translateY(0); opacity: 1; }
+
+/* ═══ Menu overlay ═══ */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  visibility: hidden;
+  pointer-events: none;
+}
+.menu-overlay.is-open { visibility: visible; pointer-events: auto; }
+.menu-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-2);
+  clip-path: inset(0 0 100% 0);
+}
+.menu-inner {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(5rem, 12vh, 8rem) clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 4vh, 3rem);
+}
+.menu-links { display: flex; flex-direction: column; }
+.menu-link {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+  padding: 0.35rem 0;
+  overflow: hidden;
+}
+.menu-idx { color: var(--gold); font-size: 0.8rem; }
+.menu-word {
+  font-size: clamp(2.4rem, 7vh, 4.4rem);
+  font-weight: 600;
+  font-variation-settings: "wdth" 84;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  display: inline-block;
+  transform: translateY(120%);
+  transition: color 0.4s;
+}
+.menu-link:hover .menu-word { color: var(--gold-hi); }
+.menu-foot {
+  display: flex;
+  gap: clamp(2rem, 8vw, 7rem);
+  border-top: 1px solid var(--line);
+  padding-top: 1.4rem;
+}
+.menu-foot-col { display: flex; flex-direction: column; gap: 0.5rem; }
+.menu-foot-label { color: var(--gold); }
+.menu-foot-col a:hover { color: var(--gold-hi); }
+
+/* ═══ Hero ═══ */
+/* Hero background stack, bottom → top:
+   0  .laser-flow    — LaserFlow beam + wisps + fog   (js/laser-flow.js)
+   1  .splash-cursor — SplashCursor fluid trail       (js/splash-cursor.js)
+   2  .hero-bg-scrim — bottom fade into the next section
+   3  .hero-grid     — copy                                              */
+.laser-flow,
+.splash-cursor {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+.laser-flow { z-index: 0; }
+.splash-cursor { z-index: 1; }
+/* Sits above the sim: only a soft bottom fade into the next section now that
+   there is no busy video to darken — the old heavy scrim would smother the splash. */
+.hero-bg-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(21, 21, 21, 0.35) 0%, rgba(21, 21, 21, 0) 22%, rgba(21, 21, 21, 0) 62%, var(--ink) 100%);
+}
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 clamp(1.5rem, 4vw, 4rem) clamp(1.4rem, 3vh, 2.5rem);
+  overflow: hidden;
+}
+/* Single column since the divider and the reserved visual column were removed —
+   the copy now runs the full width of the page instead of half of it. */
+.hero-grid {
+  position: relative;
+  z-index: 3;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding-top: clamp(6rem, 14vh, 9rem);
+}
+.hero-visual { display: none; }
+.hero-copy {
+  position: relative;
+}
+.hero-visual {
+  position: relative;
+  align-self: stretch;
+  min-height: clamp(18rem, 50vh, 34rem);
+}
+.hero-eyebrow { color: var(--gold); display: block; margin-bottom: 1.6rem; }
+.hero-title {
+  font-size: clamp(2.6rem, 5.8vw, 5.6rem);
+  color: var(--bone);
+  text-transform: uppercase;
+}
+.hero-title-long { font-size: clamp(2rem, 4.2vw, 4.2rem); }
+.hero-line { display: block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; }
+.hl-inner { display: block; transform: translateY(115%); }
+.hero-title em { text-transform: none; letter-spacing: -0.01em; }
+.hero-tag {
+  margin-top: 1.6rem;
+  font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+  color: var(--silver);
+  overflow: hidden;
+}
+.ht-inner { display: inline-block; transform: translateY(120%); }
+.hero-foot {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.hero-socials { display: flex; gap: 0.8rem; color: var(--silver); }
+.hero-socials a:hover { color: var(--gold-hi); }
+.hero-scroll {
+  position: absolute;
+  z-index: 3;
+  bottom: clamp(1.4rem, 3vh, 2.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold);
+  animation: scroll-pulse 2.4s var(--ease) infinite;
+}
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.4; transform: translate(-50%, 0); }
+  50% { opacity: 1; transform: translate(-50%, 6px); }
+}
+
+/* ═══ Section break: quiet gold hairline between chapters ═══ */
+.section-break {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(3.5rem, 9vh, 6.5rem) 0;
+  background: var(--ink);
+}
+.sb-line {
+  width: min(28rem, 56vw);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+
+/* ═══ Brand film ═══ */
+.film {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+}
+/* Museum stage — revealed behind the film as it docks */
+.film-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+}
+.museum-wrap {
+  /* covers the viewport while preserving the 1672×941 image aspect,
+     so the golden screen's position is always exact */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: max(100vw, 177.7vh);
+  height: max(100vh, 56.28vw);
+  will-change: transform;
+}
+.museum-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+}
+.museum-screen {
+  /* inner area of the golden frame, measured from the image pixels */
+  position: absolute;
+  left: 29.25%;
+  top: 22.10%;
+  width: 41.27%;
+  height: 28.69%;
+  pointer-events: none;
+}
+.film-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #050506;
+}
+.film-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.film-frame-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  /* Light wash only. The old 45% scrim was there to drown a caption baked into
+     the stock clip; the Remotion film has none, so let it read through. */
+  background: rgba(21, 21, 21, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+.film-overlay-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  will-change: transform;
+  /* frosted card — sits in the band the film deliberately leaves empty */
+  padding: clamp(1.4rem, 3.2vh, 2.2rem) clamp(2.2rem, 5vw, 4.5rem);
+  border: 1px solid rgba(240, 216, 178, 0.16);
+  border-radius: 18px;
+  background: rgba(8, 8, 10, 0.32);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+}
+.film-eyebrow { color: var(--gold); letter-spacing: 0.18em; }
+.film-word {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3.4vw, 3rem);
+  color: var(--bone);
+}
+.film-word em { color: var(--gold-hi); }
+.film-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+  letter-spacing: 0.04em;
+  color: var(--silver);
+}
+.film-sub em { color: var(--gold-hi); font-style: italic; }
+.film-copy {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: clamp(1.8rem, 5.5vh, 4rem);
+  transform: translateX(-50%);
+  width: min(38rem, 88vw);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+}
+.film-copy h2 {
+  font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+  color: var(--bone);
+  margin: 1rem 0 1.2rem;
+}
+.film-copy p { color: var(--silver); line-height: 1.75; margin-bottom: 1.4rem; }
+/* static fallback: mobile & reduced motion — stacked, no pin */
+.film-static { height: auto; }
+.film-static .film-stage { display: none; }
+.film-static .film-frame {
+  position: relative;
+  height: 62vh;
+  border-radius: 14px;
+  margin: 0 clamp(1rem, 3vw, 2rem);
+}
+.film-static .film-copy {
+  position: static;
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  width: auto;
+  max-width: 34rem;
+  text-align: left;
+  padding: 3rem clamp(1.5rem, 4vw, 4rem) 1rem;
+}
+
+/* ═══ Ring button ═══ */
+/* ═══ Liquid glass ═══
+   Ported from the kokonutui liquid-glass component (React + Tailwind) to plain
+   CSS. Three layers do the work:
+     1. a barely-there fill, so the surface exists at all
+     2. backdrop-filter — blur + saturate, warped by #glass-warp wherever the
+        browser accepts an SVG filter in a backdrop; the plain blur declared
+        first is the fallback everywhere else
+     3. a stack of inset shadows faking the bevel: bright top-left and
+        bottom-right hairlines, a soft inner rim, an outer bloom
+   The site is dark, so these are the component's dark-mode shadow values.
+
+   The filter has to sit on the button itself, not on a child: GSAP puts a
+   transform on .btn-ring for the magnetic hover, which makes the button a
+   backdrop root — a child's backdrop-filter would then sample the button
+   instead of the page behind it. */
+.btn-ring,
+.nav-menu-btn {
+  background: rgba(245, 244, 242, 0.045);
+  -webkit-backdrop-filter: blur(6px) saturate(180%);
+  backdrop-filter: blur(6px) saturate(180%);
+  box-shadow:
+    0 0 8px rgba(0, 0, 0, 0.03),
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    inset 3px 3px 0.5px -3.5px rgba(255, 255, 255, 0.09),
+    inset -3px -3px 0.5px -3.5px rgba(255, 255, 255, 0.85),
+    inset 1px 1px 1px -0.5px rgba(255, 255, 255, 0.6),
+    inset -1px -1px 1px -0.5px rgba(255, 255, 255, 0.6),
+    inset 0 0 6px 6px rgba(255, 255, 255, 0.12),
+    inset 0 0 2px 2px rgba(255, 255, 255, 0.06),
+    0 0 12px rgba(0, 0, 0, 0.15);
+}
+/* Separate rule, no @supports: a browser that can't parse url() inside a
+   backdrop simply drops this and keeps the plain blur above. */
+.btn-ring,
+.nav-menu-btn {
+  backdrop-filter: url(#glass-warp) blur(3px) saturate(180%);
+}
+.glass-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.btn-ring {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: clamp(7.5rem, 11vw, 9.5rem);
+  aspect-ratio: 1;
+  border: 1px solid rgba(201, 151, 99, 0.45);
+  border-radius: 50%;
+  overflow: hidden;
+  transition: border-color 0.4s var(--ease);
+}
+.btn-ring:hover { border-color: var(--gold); }
+.btn-ring-sm { width: 7rem; }
+.btn-ring-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  border-radius: 50%;
+  transform: translateY(101%);
+  transition: transform 0.6s var(--ease);
+  z-index: 0;
+}
+.btn-ring:hover .btn-ring-fill { transform: translateY(0); }
+.btn-ring-txt {
+  position: relative;
+  z-index: 1;
+  color: var(--bone);
+  transition: color 0.4s;
+  text-align: center;
+}
+.btn-ring:hover .btn-ring-txt { color: var(--ink); }
+.btn-ring-ghost { border-color: rgba(245, 244, 242, 0.28); }
+.btn-ring-ghost .btn-ring-fill { background: var(--bone); }
+
+/* ═══ Q&A — scroll story under the lamp ═══ */
+.aside-label { color: var(--gold); flex-shrink: 0; line-height: 1.8; }
+.qa {
+  position: relative;
+  /* No border-top: the .section-break above is the split now, and a hairline
+     sitting on top of a fade just reinstates the hard edge it removes. */
+}
+.qa-pin {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+/* The lamp glow is a radial gradient anchored near the top of this pin, so it
+   arrives at full strength on the section's very first pixel — a visible seam
+   against the flat ink of the section before it. These two layers ramp the
+   scene into and out of the surrounding background instead.
+   z-index 1 keeps them above the glow but below the lamp (z-index 2), so the
+   bulb and its cord stay untouched. */
+.qa-pin::before,
+.qa-pin::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 16vh;
+  z-index: 1;
+  pointer-events: none;
+}
+.qa-pin::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--ink) 0%, rgba(21, 21, 21, 0) 100%);
+}
+.qa-pin::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--ink) 0%, rgba(21, 21, 21, 0) 100%);
+}
+.lamp-video {
+  position: absolute;
+  top: -2vh;
+  left: 50%;
+  transform: translateX(-50%);
+  height: clamp(11rem, 32vh, 20rem);
+  pointer-events: none;
+  z-index: 2;
+}
+.qa-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(75rem, 96vw);
+  height: 80vh;
+  background: radial-gradient(50% 48% at 50% 20%, rgba(216, 174, 124, 0.2), transparent 70%);
+  pointer-events: none;
+}
+.qa-newsletter-title {
+  position: absolute;
+  z-index: 1;
+  right: clamp(1.5rem, 6vw, 6rem);
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  text-align: right;
+  pointer-events: none;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.6rem, 3vw, 3rem);
+  line-height: 1.3;
+  color: var(--gold);
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 25%, #000 75%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 25%, #000 75%, transparent 100%);
+}
+@media (max-width: 1000px) {
+  .qa-newsletter-title { display: none; }
+}
+.qa-steps { position: absolute; inset: 0; }
+.qa-step {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(1.3rem, 3.2vh, 2.2rem);
+  /* text starts below the lamp (lamp = clamp(11rem,32vh,20rem) hung at -2vh) */
+  padding: calc(clamp(11rem, 32vh, 20rem) + 1.5rem) clamp(1.5rem, 5vw, 5rem) 0;
+  text-align: center;
+  pointer-events: none;
+}
+.qa-step-final { pointer-events: auto; }
+.qa-eyebrow { color: var(--gold); letter-spacing: 0.22em; }
+.qa-q {
+  font-size: clamp(2.5rem, 6.6vw, 6rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--bone);
+  max-width: 14ch;
+}
+.qa-q em { text-transform: none; }
+.qa-a {
+  font-size: clamp(1.05rem, 1.65vw, 1.35rem);
+  line-height: 1.65;
+  color: var(--silver);
+  max-width: 46ch;
+}
+.qa-cta {
+  color: var(--bone);
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 4px;
+  transition: color 0.4s, letter-spacing 0.4s var(--ease);
+}
+.qa-cta:hover { color: var(--gold-hi); letter-spacing: 0.2em; }
+/* static fallback: reduced motion — stacked, no pin */
+.qa-static .qa-pin { height: auto; overflow: visible; padding: clamp(4rem, 9vh, 7rem) 0; }
+.qa-static .lamp-video, .qa-static .qa-glow { display: none; }
+/* The fades are scenery for the pinned lamp; the stacked fallback has neither. */
+.qa-static .qa-pin::before, .qa-static .qa-pin::after { display: none; }
+.qa-static .qa-steps { position: static; }
+.qa-static .qa-step {
+  position: static;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  padding: clamp(2rem, 5vh, 3.5rem) clamp(1.5rem, 5vw, 5rem);
+  pointer-events: auto;
+}
+
+/* ═══ Services ═══ */
+.services {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(4rem, 9vh, 7rem) clamp(1.5rem, 4vw, 4rem) clamp(2.5rem, 5vh, 4rem);
+  border-top: 1px solid var(--line);
+}
+.services-kicker {
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  font-weight: 600;
+  font-variation-settings: "wdth" 87;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  margin-bottom: clamp(3rem, 7vh, 5rem);
+}
+/* video backdrop — clipped in its own wrapper so the sticky letters
+   (which break inside an overflow:hidden section) keep working */
+.services-bgwrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+.services-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+}
+.services-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--ink) 0%, rgba(21, 21, 21, 0.28) 16%, rgba(21, 21, 21, 0.28) 84%, var(--ink) 100%);
+}
+.services-list { position: relative; z-index: 1; }
+
+/* ── Automation tiers ── */
+.atier {
+  position: relative;
+  display: block;
+  padding: clamp(1.8rem, 3.6vh, 2.8rem) clamp(1rem, 2vw, 1.8rem);
+  padding-right: clamp(3rem, 5vw, 4.5rem);
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+  isolation: isolate;
+}
+.atier:last-child { border-bottom: 1px solid var(--line); }
+.atier::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.55s var(--ease);
+  z-index: -1;
+}
+.atier:hover::before { transform: scaleY(1); }
+.at-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: clamp(0.9rem, 2vh, 1.4rem);
+}
+.at-idx { color: var(--gold); letter-spacing: 0.18em; transition: color 0.4s; }
+.at-price {
+  color: var(--bone);
+  border: 1px solid var(--gold);
+  border-radius: 2rem;
+  padding: 0.45em 1em;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  transition: color 0.4s, border-color 0.4s;
+}
+.at-price b { color: var(--gold-hi); font-weight: 500; transition: color 0.4s; }
+.at-name {
+  font-size: clamp(1.7rem, 3.6vw, 3.2rem);
+  font-weight: 600;
+  font-variation-settings: "wdth" 84;
+  letter-spacing: -0.02em;
+  color: var(--bone);
+  margin-bottom: clamp(1rem, 2.4vh, 1.6rem);
+  transition: color 0.4s;
+}
+.at-name em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold-hi);
+  transition: color 0.4s;
+}
+.at-examples {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem 2rem;
+}
+.at-examples li {
+  position: relative;
+  color: var(--silver);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  padding-left: 1.3rem;
+  transition: color 0.4s;
+}
+.at-examples li::before {
+  content: "↳";
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  transition: color 0.4s;
+}
+.at-arrow {
+  position: absolute;
+  right: clamp(1rem, 2vw, 1.8rem);
+  top: clamp(1.7rem, 3.4vh, 2.6rem);
+  font-size: 1.5rem;
+  color: var(--gold);
+  transition: transform 0.55s var(--ease), color 0.4s;
+}
+.atier:hover .at-arrow { transform: translateX(0.4rem); }
+.atier:hover .at-idx,
+.atier:hover .at-arrow,
+.atier:hover .at-name,
+.atier:hover .at-name em,
+.atier:hover .at-price,
+.atier:hover .at-price b { color: var(--ink); }
+.atier:hover .at-price { border-color: var(--ink); }
+.atier:hover .at-examples li { color: rgba(21, 21, 21, 0.8); }
+.atier:hover .at-examples li::before { color: var(--ink); }
+
+/* ═══ Process — automation map ═══
+   A vertical node graph on a builder canvas: nodes stacked one under the next,
+   joined by real bezier wires that js/process-map.js draws from the live port
+   positions. Nodes step left/right off the centre line so the wires read as
+   curves, not a rail — this is a map, not a timeline. */
+.process {
+  position: relative;
+  border-top: 1px solid var(--line);
+  padding: clamp(6rem, 12vh, 9rem) clamp(1.5rem, 4vw, 4rem) clamp(7rem, 14vh, 10rem);
+  overflow: hidden;
+  /* Builder-canvas dot grid. */
+  background-image: radial-gradient(rgba(245, 244, 242, 0.055) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+.pmap-head { margin-bottom: clamp(3.5rem, 9vh, 6rem); }
+.pmap-head h2 {
+  font-size: clamp(2rem, 4.6vw, 4.2rem);
+  max-width: 20ch;
+  margin-top: 1.2rem;
+}
+
+/* ── The canvas ─────────────────────────────────────────────── */
+.pmap {
+  position: relative;
+  /* Narrow enough that the left/right step stays a short sideways move — a
+     wide canvas would force each wire into a squashed, whipping S. */
+  max-width: 46rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* The row gap is the wire's runway — the curves live in this space, and a
+     longer runway also means more scrolling per wire, which paces the build. */
+  gap: clamp(7rem, 14vh, 11rem);
+}
+/* Wires sit under the nodes and never eat pointer events. */
+.pmap-wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+.pmap-wire {
+  fill: none;
+  stroke: rgba(201, 151, 99, 0.45);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+}
+.pmap-pulse { fill: var(--gold-hi); }
+/* Rides the tip of a wire while it draws itself in. */
+.pmap-comet {
+  fill: var(--bone);
+  filter: drop-shadow(0 0 6px rgba(216, 174, 124, 0.95));
+}
+
+/* ── The node ───────────────────────────────────────────────── */
+.pnode {
+  position: relative;
+  z-index: 1;
+  width: min(34rem, 100%);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #212121 0%, var(--ink-2) 100%);
+  box-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.9);
+  /* No transform on hover — moving the node would drag its ports off the wires. */
+  transition: border-color 0.4s var(--ease), background 0.4s var(--ease);
+}
+/* Step off the centre line, alternating, so each wire has a curve to draw. */
+.pmap > .pnode:nth-of-type(odd)  { align-self: flex-start; margin-left: clamp(0rem, 2vw, 1.5rem); }
+.pmap > .pnode:nth-of-type(even) { align-self: flex-end;   margin-right: clamp(0rem, 2vw, 1.5rem); }
+.pnode:hover {
+  border-color: rgba(201, 151, 99, 0.55);
+  background: linear-gradient(180deg, #262626 0%, #1F1F1F 100%);
+}
+
+/* Header strip — node type and number, the way a builder labels a block. */
+.pn-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.8rem clamp(1.1rem, 2vw, 1.5rem);
+  border-bottom: 1px solid var(--line);
+  background: rgba(245, 244, 242, 0.025);
+  border-radius: 8px 8px 0 0;
+}
+.pn-glyph {
+  width: 1.9rem;
+  height: 1.9rem;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(201, 151, 99, 0.4);
+  border-radius: 5px;
+  color: var(--gold);
+  background: rgba(201, 151, 99, 0.09);
+}
+.pn-glyph svg { width: 1.05rem; height: 1.05rem; }
+.pn-kind { color: var(--silver); letter-spacing: 0.14em; font-size: 0.66rem; }
+.pn-id {
+  margin-left: auto;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  font-size: 0.66rem;
+}
+.pn-led {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pn-blink 2.6s var(--ease) infinite;
+}
+@keyframes pn-blink {
+  0%, 100% { opacity: 0.3; box-shadow: 0 0 0 0 rgba(201, 151, 99, 0.45); }
+  50%      { opacity: 1;   box-shadow: 0 0 0 5px rgba(201, 151, 99, 0); }
+}
+
+.pn-body { padding: clamp(1.4rem, 3vh, 1.9rem) clamp(1.1rem, 2vw, 1.5rem) 0; }
+.pnode h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); }
+.pnode p {
+  color: var(--silver);
+  line-height: 1.65;
+  font-size: 0.95rem;
+  margin-top: 0.6rem;
+}
+
+/* Footer — what this node hands downstream. */
+.pn-out {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: clamp(1.1rem, 2.2vh, 1.4rem) clamp(1.1rem, 2vw, 1.5rem) clamp(1.2rem, 2.4vh, 1.5rem);
+}
+.pn-out span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.32rem 0.7rem;
+  color: var(--silver);
+  font-size: 0.62rem;
+  letter-spacing: 0.09em;
+  transition: color 0.35s var(--ease), border-color 0.35s var(--ease);
+}
+.pnode:hover .pn-out span { color: var(--bone); border-color: rgba(201, 151, 99, 0.45); }
+
+/* Ports — where the wires physically land, top and bottom. */
+.pn-port {
+  position: absolute;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 1.5px solid var(--gold);
+  z-index: 2;
+}
+.pn-port-in  { top: -5px; }
+.pn-port-out { bottom: -5px; }
+/* Node 01 is the trigger — nothing feeds into it. Scoped to `article` on
+   purpose: the terminal is a <div>, so a bare :first-of-type would match it
+   too and hide the port its incoming wire lands on. */
+.pmap > article.pnode:first-of-type .pn-port-in { display: none; }
+
+/* ── Edge labels: the gate between two nodes, placed on the wire by JS ── */
+.pn-edge {
+  position: absolute;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  padding: 0.3rem 0.65rem;
+  border: 1px solid rgba(201, 151, 99, 0.3);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--silver);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  /* Hidden until JS has a real position for it, so it never flashes at 0,0.
+     No transition here: the scroll timeline drives this opacity directly, and
+     a CSS transition would fight it and smear every fade. */
+  opacity: 0;
+}
+.pn-edge.is-placed { opacity: 1; }
+
+/* ── Terminal node: the map ends running, not in another meeting ── */
+.pn-end {
+  width: auto;
+  align-self: center !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.3rem;
+  border-radius: 999px;
+  border-color: rgba(201, 151, 99, 0.5);
+  background: rgba(201, 151, 99, 0.08);
+  color: var(--gold-hi);
+  box-shadow: none;
+}
+.pn-end:hover { background: rgba(201, 151, 99, 0.08); }
+.pn-end .mono { font-size: 0.64rem; letter-spacing: 0.16em; }
+.pn-led-live { animation-duration: 1.6s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pmap-pulse { display: none; }
+  .pn-led { animation: none; opacity: 0.85; }
+}
+
+/* ═══ Engage ═══ */
+.engage {
+  padding: clamp(8rem, 16vh, 12rem) clamp(1.5rem, 4vw, 4rem);
+  border-top: 1px solid var(--line);
+}
+.engage h2 {
+  font-size: clamp(2.4rem, 6vw, 5.5rem);
+  margin: 1.2rem 0 clamp(3rem, 8vh, 5rem);
+}
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2vw, 2rem);
+}
+.tier {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: clamp(1.8rem, 3vh, 2.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  background: var(--ink-2);
+  transition: border-color 0.4s, transform 0.5s var(--ease);
+  will-change: transform;
+}
+.tier:hover { border-color: var(--gold); }
+.tier-featured { border-color: var(--gold); background: linear-gradient(160deg, rgba(201, 151, 99, 0.12), rgba(18, 18, 20, 0.9)); }
+.tier-shape { color: var(--gold); }
+.tier h3 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.8rem, 3vw, 2.4rem); }
+.tier p { color: var(--silver); line-height: 1.6; flex: 1; }
+.tier-link { color: var(--bone); }
+.tier-link:hover { color: var(--gold-hi); }
+
+/* ═══ Newsletter ═══ */
+.newsletter {
+  padding: clamp(8rem, 16vh, 12rem) clamp(1.5rem, 4vw, 4rem);
+  border-top: 1px solid var(--line);
+}
+.nl-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(3.4rem, 11vw, 11rem);
+  line-height: 0.96;
+  letter-spacing: 0;
+  margin: 1.4rem 0 clamp(3rem, 7vh, 5rem);
+}
+.nl-line { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.nl-inner { display: block; }
+.nl-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+}
+.nl-lead { font-size: clamp(1.05rem, 1.6vw, 1.3rem); line-height: 1.6; color: var(--silver); max-width: 34rem; }
+.subscribe {
+  display: flex;
+  border-bottom: 1px solid var(--bone);
+  transition: border-color 0.4s;
+}
+.subscribe:focus-within { border-color: var(--gold); }
+.subscribe input {
+  flex: 1;
+  background: none;
+  border: 0;
+  outline: 0;
+  color: var(--bone);
+  font-family: var(--grot);
+  font-size: 1.1rem;
+  padding: 1rem 0;
+  min-width: 0;
+}
+.subscribe input::placeholder { color: rgba(217, 217, 217, 0.4); }
+.subscribe-btn {
+  background: none;
+  border: 0;
+  color: var(--gold);
+  cursor: pointer;
+  padding: 0 0.4rem;
+  transition: letter-spacing 0.4s var(--ease), color 0.3s;
+}
+.subscribe-btn:hover { letter-spacing: 0.2em; color: var(--gold-hi); }
+.nl-note { margin-top: 1.2rem; color: var(--silver); }
+.nl-note a { color: var(--gold); }
+.nl-note a:hover { color: var(--gold-hi); }
+
+/* ═══ Glitch marquee ═══ */
+.glitch {
+  padding: clamp(5rem, 10vh, 8rem) 0;
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+.glitch-row {
+  white-space: nowrap;
+  width: max-content;
+  font-size: clamp(2.6rem, 7vw, 6.5rem);
+  font-weight: 700;
+  font-variation-settings: "wdth" 78;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1.16;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(245, 244, 242, 0.35);
+}
+.glitch-row:nth-child(even) { color: var(--gold); -webkit-text-stroke: 0; }
+.glitch-row.is-solid { color: var(--bone); -webkit-text-stroke: 0; }
+
+/* ═══ Finale ═══ */
+.finale {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2.5rem, 6vh, 4rem);
+  padding: clamp(6rem, 12vh, 9rem) clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 3vh, 2.5rem);
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+.finale-kicker {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: var(--silver);
+  max-width: 30rem;
+  line-height: 1.5;
+}
+.finale-title {
+  font-size: clamp(4rem, 13vw, 13rem);
+  text-transform: uppercase;
+}
+.fin-line { display: block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; }
+.fin-inner { display: block; transform: translateY(115%); }
+.finale-title em { text-transform: none; }
+.finale-ctas { display: flex; gap: 1.5rem; align-items: center; }
+.finale-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.4rem;
+  color: var(--silver);
+}
+.finale-socials { display: flex; gap: 1.6rem; }
+.finale-socials a:hover { color: var(--gold-hi); }
+.finale-mark b { color: var(--gold); }
+
+/* ═══ Split helpers (populated by JS) ═══ */
+.split-lines .sl-line { display: block; overflow: hidden; }
+.split-lines .sl-inner { display: block; transform: translateY(110%); }
+
+/* ═══ Reduced motion ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .hl-inner, .ht-inner, .fin-inner, .split-lines .sl-inner, .menu-word, .loader-line > span { transform: none !important; }
+  .hero-scroll { animation: none; }
+}
+
+/* ═══ Failsafe: if scripts stall or a CDN is blocked, never trap the
+       visitor behind the loader — show everything plainly ═══ */
+html.no-motion-fallback .loader { display: none !important; }
+html.no-motion-fallback .hl-inner,
+html.no-motion-fallback .ht-inner,
+html.no-motion-fallback .fin-inner,
+html.no-motion-fallback .split-lines .sl-inner,
+html.no-motion-fallback .nl-inner { transform: none !important; }
+html.no-motion-fallback .nav,
+html.no-motion-fallback .hero-eyebrow,
+html.no-motion-fallback .hero-foot,
+html.no-motion-fallback .hero-scroll,
+html.no-motion-fallback .film-copy,
+html.no-motion-fallback .qa-step,
+html.no-motion-fallback .tier,
+html.no-motion-fallback .atier,
+html.no-motion-fallback .aside-label,
+html.no-motion-fallback .finale-ctas .btn-ring {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* ═══ Responsive ═══ */
+@media (max-width: 900px) {
+  .tiers { grid-template-columns: 1fr; }
+  .nl-grid { grid-template-columns: 1fr; }
+  .at-examples { grid-template-columns: 1fr; }
+  .at-head { flex-wrap: wrap; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .nav-cta { display: none; }
+  /* The map is already vertical; just let the nodes fill the column. */
+  .pmap { gap: clamp(3.5rem, 7vh, 5rem); }
+  .pmap > .pnode { width: 100%; }
+  .pmap > .pnode:nth-of-type(odd),
+  .pmap > .pnode:nth-of-type(even) { align-self: stretch; margin: 0; }
+  .pmap-head h2 { max-width: none; }
+  .finale-foot { flex-wrap: wrap; }
+}
+
+/* ═══ MagicBento effects (js/magic-bento.js) ═══
+   Applied to the existing .tier and .pnode elements.
+   Glow is gold #B08D57 = rgb(201, 151, 99) — the upstream purple is unused. */
+.bento-section { position: relative; }
+
+.bento-fx {
+  position: relative;
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 300px;
+}
+
+/* Particles and click ripples are clipped to this layer instead of forcing
+   overflow:hidden onto the card itself. */
+.bento-fx-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+/* Keep the card's own content above that layer. The node ports are excluded —
+   they are absolutely positioned onto the card's edge and must stay that way. */
+.bento-fx > *:not(.bento-fx-layer):not(.pn-port) {
+  position: relative;
+  z-index: 2;
+}
+
+/* Border glow that tracks the cursor — a masked ring, so only the edge lights up. */
+.bento-fx::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 4px;
+  border-radius: inherit;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(201, 151, 99, calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(201, 151, 99, calc(var(--glow-intensity) * 0.4)) 30%,
+    transparent 60%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+  transition: opacity 0.3s ease;
+}
+
+.bento-fx:hover {
+  box-shadow:
+    0 4px 20px rgba(21, 21, 21, 0.45),
+    0 0 30px rgba(201, 151, 99, 0.2);
+}
+
+.global-spotlight {
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bento-fx::after,
+  .global-spotlight { display: none; }
+}
+
+/* ═══ LineSidebar section rail (js/line-sidebar.js) ═══
+   Fixed in the left gutter. Hidden below 1280px so it can never sit over
+   content on narrower screens, and hidden while the menu overlay is open. */
+.line-sidebar {
+  --accent-color: var(--gold);
+  --text-color: var(--muted);
+  --marker-color: var(--muted);
+  --marker-length: 40px;
+  --marker-gap: 0px;
+  --tick-scale: 0.5;
+  --max-shift: 14px;
+  --item-gap: 18px;
+  --font-size: 0.78rem;
+  --smoothing: 100ms;
+
+  position: fixed;
+  left: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;                /* under the nav bar and menu overlay */
+  display: none;              /* .is-visible opts in — set by JS at >=1280px */
+  padding-left: calc(var(--marker-length) + var(--marker-gap));
+}
+.line-sidebar.is-visible { display: flex; }
+@media (max-width: 1279px) {
+  .line-sidebar,
+  .line-sidebar.is-visible { display: none; }
+}
+body.menu-open .line-sidebar,
+.line-sidebar.is-parked {
+  opacity: 0;
+  pointer-events: none;
+}
+.line-sidebar { transition: opacity 0.4s var(--ease); }
+
+.line-sidebar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--item-gap);
+}
+
+/* --effect (0..1) is eased per item by the rAF loop in JS; every property
+   below reads that same value so they move together. */
+.line-sidebar__item { position: relative; }
+
+.line-sidebar__label {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: var(--font-size);
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--text-color));
+  transform: translateX(calc(var(--effect, 0) * var(--max-shift)));
+}
+
+.line-sidebar__index {
+  margin-right: 0.6rem;
+  font-size: 0.85em;
+  opacity: calc(0.55 + var(--effect, 0) * 0.45);
+}
+
+.line-sidebar__marker {
+  position: absolute;
+  top: 50%;
+  left: calc(-1 * var(--marker-length) - var(--marker-gap));
+  height: 1px;
+  width: var(--marker-length);
+  background-color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--marker-color));
+  transform-origin: left center;
+  transform: translateY(-50%) scaleX(calc(0.7 + var(--effect, 0) * 0.5));
+}
+
+/* Short tick centred in the gap between two items */
+.line-sidebar--markers .line-sidebar__item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + var(--item-gap) / 2);
+  left: calc(-1 * var(--marker-length) - var(--marker-gap));
+  height: 1px;
+  width: calc(var(--marker-length) * var(--tick-scale));
+  background-color: var(--marker-color);
+  opacity: 0.5;
+  transform: translateY(-50%);
+}
+.line-sidebar--scale-tick .line-sidebar__item:not(:last-child)::after {
+  transform-origin: left center;
+  transform: translateY(-50%) scaleX(calc(0.7 + var(--effect, 0) * 0.6));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line-sidebar__label { transform: none; }
+}
+
+/* ═══ VariableProximity hero letters (js/variable-proximity.js) ═══ */
+.vp-word {
+  display: inline-block;
+  white-space: nowrap;   /* keeps inline-block letters from breaking mid-word */
+}
+.vp-letter {
+  display: inline-block;
+  will-change: font-variation-settings;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Reserve the rail's column so it never sits over content. Applied to the text
+   wrappers only — NOT to the sections themselves, whose absolutely positioned
+   inset:0 background videos must stay full-bleed. */
+@media (min-width: 1280px) {
+  :root { --rail: 120px; }
+
+  /* calc(), not a bare value — these wrappers set padding via a shorthand, and a
+     plain padding-left would REPLACE their existing gutter instead of adding to it. */
+  .hero-grid,
+  .hero-foot,
+  .hero-scroll,
+  .services-list,
+  .pmap-head,
+  .engage,
+  .newsletter {
+    padding-left: calc(var(--rail) + clamp(1.5rem, 4vw, 4rem));
+  }
+
+}

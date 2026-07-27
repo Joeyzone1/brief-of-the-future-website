@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brief of the Future — Youssef Aylan · Business. AI. Systems.</title>
+  <meta name="description" content="AI automation studio of Youssef Aylan. I design and build the systems that take repetitive work off your team's plate. Home of the Brief of the Future newsletter.">
+  <!-- TODO(deploy): canonical + OG tags once briefofthefuture.com is purchased -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wdth,wght@62.5..125,100..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=20260727a">
+  <link rel="preload" as="image" href="assets/museum2.jpg">
+</head>
+<body class="is-loading">
+
+  <!-- ═══ Preloader ═══ -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader-inner">
+      <span class="loader-eyebrow mono">( LOADING THE FUTURE )</span>
+      <div class="loader-mark">
+        <span class="loader-line"><span>BRIEF</span></span>
+        <span class="loader-line"><span class="of">OF THE</span></span>
+        <span class="loader-line"><span>FUTURE</span></span>
+      </div>
+    </div>
+    <div class="loader-count mono"><span id="loader-count">00</span></div>
+    <div class="loader-bar"><span id="loader-bar"></span></div>
+  </div>
+
+  <!-- ═══ Custom cursor ═══ -->
+  <div class="cursor" id="cursor"><span class="cursor-label mono" id="cursor-label"></span></div>
+
+  <!-- ═══ Nav ═══ -->
+  <nav class="nav" id="nav">
+    <a class="nav-mark" href="#top" data-cursor="hover"><img class="nav-logo" src="assets/logo.png" alt="">BRIEF <b>OF THE</b> FUTURE</a>
+    <div class="nav-right">
+      <a class="nav-cta mono" href="mailto:Youssef.ajlan@gmail.com?subject=Book%20a%20call%20—%20automation%20scoping" data-cursor="hover">BOOK A CALL</a>
+      <button class="nav-menu-btn mono" id="menu-btn" aria-expanded="false" data-cursor="hover">
+        <span class="menu-txt">MENU</span><span class="menu-txt-close">CLOSE</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══ Full-screen menu overlay ═══ -->
+  <div class="menu-overlay" id="menu-overlay" aria-hidden="true">
+    <div class="menu-bg"></div>
+    <div class="menu-inner">
+      <div class="menu-links">
+        <a href="#hero" class="menu-link" data-cursor="hover"><span class="menu-idx mono">01</span><span class="menu-word">Home</span></a>
+        <a href="#services" class="menu-link" data-cursor="hover"><span class="menu-idx mono">02</span><span class="menu-word">Services</span></a>
+        <a href="#statement" class="menu-link" data-cursor="hover"><span class="menu-idx mono">03</span><span class="menu-word">Newsletter</span></a>
+        <a href="#contact" class="menu-link" data-cursor="hover"><span class="menu-idx mono">04</span><span class="menu-word">Contact</span></a>
+      </div>
+      <div class="menu-foot">
+        <div class="menu-foot-col">
+          <span class="mono menu-foot-label">( SOCIALS )</span>
+          <!-- TODO: real LinkedIn URL -->
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener" class="mono" data-cursor="hover">LINKEDIN</a>
+          <a href="https://briefofthefuture.substack.com" target="_blank" rel="noopener" class="mono" data-cursor="hover">SUBSTACK</a>
+        </div>
+        <div class="menu-foot-col">
+          <span class="mono menu-foot-label">( STUDIO )</span>
+          <span class="mono">AI SYSTEMS — REMOTE, WORLDWIDE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main id="top">
+
+    <!-- ═══ 00 · Hero ═══ -->
+    <header class="hero" id="hero">
+      <!-- background video removed 21 Jul — the hero canvas is now the SplashCursor fluid sim (js/splash-cursor.js) -->
+      <div class="hero-bg-scrim" aria-hidden="true"></div>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="hero-eyebrow mono split-chars">( YOUSSEF AYLAN — AI SYSTEMS STUDIO )</p>
+          <h1 class="hero-title hero-title-long">
+            <span class="hero-line"><span class="hl-inner">Every lead you’re</span></span>
+            <span class="hero-line"><span class="hl-inner">slow to answer is a lead</span></span>
+            <span class="hero-line"><span class="hl-inner">someone else <em>just closed.</em></span></span>
+          </h1>
+          <p class="hero-tag"><span class="ht-inner">Systems that respond, qualify, and follow up before your competitor even opens their inbox.</span></p>
+        </div>
+        <div class="hero-visual" id="hero-visual" aria-hidden="true">
+          <!-- Reserved: hero animation goes here -->
+        </div>
+      </div>
+      <div class="hero-foot">
+        <a class="btn-ring" href="mailto:Youssef.ajlan@gmail.com?subject=Book%20a%20call%20—%20automation%20scoping" data-cursor="cta">
+          <span class="btn-ring-fill"></span><span class="btn-ring-txt mono">BOOK A CALL</span>
+        </a>
+        <div class="hero-socials mono">
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener" data-cursor="hover">LINKEDIN</a>
+          <span>/</span>
+          <a href="https://briefofthefuture.substack.com" target="_blank" rel="noopener" data-cursor="hover">SUBSTACK</a>
+        </div>
+      </div>
+      <div class="hero-scroll mono">( SCROLL )</div>
+    </header>
+
+    <!-- ═══ Divider: hero → film ═══ -->
+    <div class="section-break" aria-hidden="true"><span class="sb-line"></span></div>
+
+    <!-- ═══ 00b · Brand film: full-screen, docks into the museum screen on scroll ═══ -->
+    <section class="film" id="film">
+      <div class="film-stage" id="film-stage" aria-hidden="true">
+        <div class="museum-wrap" id="museum-wrap">
+          <img class="museum-img" src="assets/museum2.jpg" alt="" draggable="false">
+          <div class="museum-screen" id="museum-screen"></div>
+        </div>
+      </div>
+      <div class="film-frame" id="film-frame">
+        <!-- Brand film, built with Remotion — source in video/src (BrandFilm).
+             Composed 1920×1080 with everything inside the middle 70% vertically,
+             because object-fit:cover crops it to 2.556:1 once it docks. -->
+        <video class="film-video lazy-video" poster="assets/film-poster.jpg?v=20260722a" muted loop playsinline preload="none">
+          <source data-src="assets/film.webm?v=20260722a" type="video/webm">
+          <source data-src="assets/film.mp4?v=20260722a" type="video/mp4">
+        </video>
+        <div class="film-frame-overlay">
+          <div class="film-overlay-inner" id="film-overlay-inner">
+            <span class="mono film-eyebrow">( BRIEF OF THE FUTURE — SYSTEMS IN MOTION )</span>
+            <p class="film-word">Business. AI. <em>Systems.</em></p>
+            <p class="film-sub">Brief of the Future — <em>Newsletter</em></p>
+          </div>
+        </div>
+      </div>
+      <div class="film-copy" id="film-copy">
+        <span class="mono aside-label">( The idea )</span>
+        <h2>We automate the work <em>nobody wants.</em></h2>
+        <p>Your team gets their time back — for the work that moves the business forward.</p>
+        <a class="tier-link mono" href="#services" data-cursor="hover">SEE THE WORK ↓</a>
+      </div>
+    </section>
+
+    <!-- ═══ Divider: film → services ═══ -->
+    <div class="section-break" aria-hidden="true"><span class="sb-line"></span></div>
+
+    <!-- ═══ 01 · Services — the automations, tiered by scale ═══ -->
+    <section class="services" id="services">
+      <div class="services-bgwrap" aria-hidden="true">
+        <video class="services-bg lazy-video" muted loop playsinline preload="none">
+          <source data-src="assets/work-bg.mp4" type="video/mp4">
+        </video>
+        <div class="services-scrim"></div>
+      </div>
+      <div class="services-list">
+        <p class="services-kicker split-lines">Good teams work hard.<br><em>Great teams have systems.</em></p>
+
+        <a class="atier" href="mailto:Youssef.ajlan@gmail.com?subject=Single%20Agent%20—%20scoping%20call" data-cursor="row">
+          <div class="at-head">
+            <span class="at-idx mono">( 01 — SINGLE AGENT )</span>
+            <span class="at-price mono">STARTS AT <b>$600</b></span>
+          </div>
+          <h3 class="at-name">One agent. One job. <em>Done forever.</em></h3>
+          <ul class="at-examples">
+            <li>Lead-reply agent — answers every new inquiry in under a minute, day or night</li>
+            <li>Invoice chaser — follows unpaid invoices politely, relentlessly, until they're settled</li>
+            <li>Review responder — replies to every review in your voice, before competitors wake up</li>
+          </ul>
+          <span class="at-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <a class="atier" href="mailto:Youssef.ajlan@gmail.com?subject=Multi-Agent%20Automation%20—%20scoping%20call" data-cursor="row">
+          <div class="at-head">
+            <span class="at-idx mono">( 02 — MULTI-AGENT AUTOMATION )</span>
+            <span class="at-price mono">STARTS AT <b>$1,500</b></span>
+          </div>
+          <h3 class="at-name">Agents that hand work <em>to each other.</em></h3>
+          <ul class="at-examples">
+            <li>Speed-to-lead engine — capture, enrich, qualify, and book the call while the lead is still warm</li>
+            <li>Content engine — research, draft, design, and schedule a week of content from one idea</li>
+            <li>Hiring screener — parse CVs, rank candidates, land interviews straight on your calendar</li>
+          </ul>
+          <span class="at-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <a class="atier" href="mailto:Youssef.ajlan@gmail.com?subject=Full%20System%20Automation%20—%20scoping%20call" data-cursor="row">
+          <div class="at-head">
+            <span class="at-idx mono">( 03 — FULL SYSTEM AUTOMATION )</span>
+            <span class="at-price mono">STARTS AT <b>$3,000</b></span>
+          </div>
+          <h3 class="at-name">Your operations, <em>running themselves.</em></h3>
+          <ul class="at-examples">
+            <li>Sales ops backbone — CRM, follow-ups, proposals, and reporting stitched into one flow</li>
+            <li>Support desk — triage, answers, escalation, and a satisfaction loop that never sleeps</li>
+            <li>Back-office autopilot — invoicing, onboarding, documents, and live dashboards, hands-free</li>
+          </ul>
+          <span class="at-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══ 02 · Process (automation map — vertical node graph) ═══ -->
+    <section class="process" id="process">
+      <div class="pmap-head">
+        <span class="mono aside-label">( The process )</span>
+        <h2 class="split-lines">No deck-and-disappear. Four nodes, <em>then it runs.</em></h2>
+      </div>
+
+      <!-- Wires are drawn into this SVG by js/process-map.js from the real port
+           positions, so the curves stay correct at every width. -->
+      <div class="pmap" id="pmap">
+        <svg class="pmap-wires" id="pmap-wires" aria-hidden="true"></svg>
+
+        <article class="pnode">
+          <span class="pn-port pn-port-in" aria-hidden="true"></span>
+          <span class="pn-port pn-port-out" aria-hidden="true"></span>
+          <header class="pn-bar">
+            <span class="pn-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+            </span>
+            <span class="pn-kind mono">Trigger</span>
+            <span class="pn-id mono">01</span>
+            <span class="pn-led" aria-hidden="true"></span>
+          </header>
+          <div class="pn-body">
+            <h3>Diagnose</h3>
+            <p>I map how work actually moves through your company — not the org-chart version — and we find where the hours and the money are leaking.</p>
+          </div>
+          <footer class="pn-out">
+            <span class="mono">Process map</span>
+            <span class="mono">Where it leaks</span>
+          </footer>
+        </article>
+
+        <span class="pn-edge mono" aria-hidden="true">map approved</span>
+
+        <article class="pnode">
+          <span class="pn-port pn-port-in" aria-hidden="true"></span>
+          <span class="pn-port pn-port-out" aria-hidden="true"></span>
+          <header class="pn-bar">
+            <span class="pn-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h5"/><path d="M8 12l4-5h9"/><path d="M8 12l4 5h9"/></svg>
+            </span>
+            <span class="pn-kind mono">Router</span>
+            <span class="pn-id mono">02</span>
+            <span class="pn-led" aria-hidden="true"></span>
+          </header>
+          <div class="pn-body">
+            <h3>Scope</h3>
+            <p>We pick the one to three processes where automation pays back fastest, agree exactly what “done” looks like, and price it before a line gets built.</p>
+          </div>
+          <footer class="pn-out">
+            <span class="mono">Ranked shortlist</span>
+            <span class="mono">Fixed scope</span>
+          </footer>
+        </article>
+
+        <span class="pn-edge mono" aria-hidden="true">scope signed</span>
+
+        <article class="pnode">
+          <span class="pn-port pn-port-in" aria-hidden="true"></span>
+          <span class="pn-port pn-port-out" aria-hidden="true"></span>
+          <header class="pn-bar">
+            <span class="pn-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
+            </span>
+            <span class="pn-kind mono">Action</span>
+            <span class="pn-id mono">03</span>
+            <span class="pn-led" aria-hidden="true"></span>
+          </header>
+          <div class="pn-body">
+            <h3>Build</h3>
+            <p>I build and ship the system against your real work, not a sandbox. You watch it run on live data before you ever rely on it.</p>
+          </div>
+          <footer class="pn-out">
+            <span class="mono">Working system</span>
+            <span class="mono">Live test runs</span>
+          </footer>
+        </article>
+
+        <span class="pn-edge mono" aria-hidden="true">running clean</span>
+
+        <article class="pnode">
+          <span class="pn-port pn-port-in" aria-hidden="true"></span>
+          <span class="pn-port pn-port-out" aria-hidden="true"></span>
+          <header class="pn-bar">
+            <span class="pn-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h13"/><path d="M12 7l5 5-5 5"/><path d="M20 4v16"/></svg>
+            </span>
+            <span class="pn-kind mono">Handoff</span>
+            <span class="pn-id mono">04</span>
+            <span class="pn-led" aria-hidden="true"></span>
+          </header>
+          <div class="pn-body">
+            <h3>Hand off</h3>
+            <p>Documented, trained, and yours. Take the keys — or keep me on call as the business changes and the system has to change with it.</p>
+          </div>
+          <footer class="pn-out">
+            <span class="mono">SOPs + recordings</span>
+            <span class="mono">Trained owner</span>
+          </footer>
+        </article>
+
+        <span class="pn-edge mono" aria-hidden="true">keys handed over</span>
+
+        <div class="pnode pn-end">
+          <span class="pn-port pn-port-in" aria-hidden="true"></span>
+          <span class="pn-led pn-led-live" aria-hidden="true"></span>
+          <span class="mono">System live</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 03 · Engage ═══ -->
+    <section class="engage" id="engage">
+      <span class="mono aside-label">( Ways in )</span>
+      <h2 class="split-lines">Start small. <em>Scale</em> what works.</h2>
+      <div class="tiers">
+        <div class="tier" data-tilt>
+          <span class="tier-shape mono">FIXED FEE · 1–2 WKS</span>
+          <h3>The Brief</h3>
+          <p>A focused audit of your operations. You leave with a ranked map of what to automate first, what it’s worth, and what to leave alone.</p>
+          <a class="tier-link mono" href="mailto:Youssef.ajlan@gmail.com?subject=The%20Brief%20—%20scoping%20call" data-cursor="hover">SCOPE IT →</a>
+        </div>
+        <div class="tier tier-featured" data-tilt>
+          <span class="tier-shape mono">PROJECT · SCOPED UP FRONT</span>
+          <h3>The Build</h3>
+          <p>One to three processes — built, shipped, documented, and running without me. The audit’s map, turned into working systems.</p>
+          <a class="tier-link mono" href="mailto:Youssef.ajlan@gmail.com?subject=The%20Build%20—%20scoping%20call" data-cursor="hover">SCOPE IT →</a>
+        </div>
+        <div class="tier" data-tilt>
+          <span class="tier-shape mono">MONTHLY</span>
+          <h3>On Call</h3>
+          <p>A fractional automation lead in your corner — tuning, extending, and vetoing shiny objects as your business changes.</p>
+          <a class="tier-link mono" href="mailto:Youssef.ajlan@gmail.com?subject=On%20Call%20—%20scoping%20call" data-cursor="hover">SCOPE IT →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Divider: engage → the point ═══ -->
+    <div class="section-break" aria-hidden="true"><span class="sb-line"></span></div>
+
+    <!-- ═══ 04 · Q&A — scroll story under the lamp ═══ -->
+    <section class="qa" id="statement">
+      <div class="qa-pin" id="qa-pin">
+        <canvas class="lamp-video lamp-canvas" width="400" height="605" aria-hidden="true"></canvas>
+        <div class="qa-glow" aria-hidden="true"></div>
+        <div class="qa-newsletter-title" aria-hidden="true"><span>Newsletter</span></div>
+        <div class="qa-steps">
+          <div class="qa-step">
+            <span class="qa-eyebrow mono">( 01 / 04 )</span>
+            <h2 class="qa-q">Who <em>we are?</em></h2>
+            <p class="qa-a">A weekly breakdown of what’s actually happening in AI, automation, business, and remote work. No theory. Just what’s moving.</p>
+          </div>
+          <div class="qa-step">
+            <span class="qa-eyebrow mono">( 02 / 04 )</span>
+            <h2 class="qa-q">Our <em>goal?</em></h2>
+            <p class="qa-a">This space moves fast. We want you to keep up — and know enough to build it yourself. Too busy? That’s what we’re here for.</p>
+          </div>
+          <div class="qa-step">
+            <span class="qa-eyebrow mono">( 03 / 04 )</span>
+            <h2 class="qa-q">What <em>you get?</em></h2>
+            <p class="qa-a">No hype, no bluff. Just the patterns, the data, and the systems worth paying attention to.</p>
+          </div>
+          <div class="qa-step qa-step-final">
+            <span class="qa-eyebrow mono">( 04 / 04 )</span>
+            <h2 class="qa-q">Ready to <em>keep up?</em></h2>
+            <a class="qa-cta mono" href="#newsletter" data-cursor="hover">GET THE BRIEF ↓</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 05 · Newsletter ═══ -->
+    <section class="newsletter" id="newsletter">
+      <span class="mono aside-label">( The newsletter )</span>
+      <h2 class="nl-title">
+        <span class="nl-line"><span class="nl-inner">Brief of</span></span>
+        <span class="nl-line"><span class="nl-inner">the <em>Future.</em></span></span>
+      </h2>
+      <div class="nl-grid">
+        <p class="nl-lead split-lines">Every week: one business, AI, or systems idea you can use the same day. Data over hype, always under five minutes. The 40-tab research spiral is my job — the brief is yours.</p>
+        <div class="nl-sub">
+          <form class="subscribe" id="subscribe-form">
+            <input type="email" id="subscribe-email" placeholder="you@company.com" required aria-label="Email address">
+            <button class="subscribe-btn mono" type="submit" data-cursor="hover">SUBSCRIBE →</button>
+          </form>
+          <p class="nl-note mono">FREE · WEEKLY · ON <a href="https://briefofthefuture.substack.com" target="_blank" rel="noopener" data-cursor="hover">SUBSTACK ↗</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 06 · Glitch marquee ═══ -->
+    <section class="glitch" aria-hidden="true">
+      <div class="glitch-rows" id="glitch-rows">
+        <div class="glitch-row"><span>the future is a brief away — the future is a brief away — the future is a brief away — </span></div>
+        <div class="glitch-row"><span>business · ai · systems — business · ai · systems — business · ai · systems — business · ai · systems — </span></div>
+        <div class="glitch-row"><span>the future is a brief away — the future is a brief away — the future is a brief away — </span></div>
+        <div class="glitch-row"><span>business · ai · systems — business · ai · systems — business · ai · systems — business · ai · systems — </span></div>
+      </div>
+    </section>
+
+    <!-- ═══ 07 · Footer finale ═══ -->
+    <footer class="finale" id="contact">
+      <p class="finale-kicker split-lines">We build AI systems for teams ready to go beyond the ordinary.</p>
+      <h2 class="finale-title">
+        <span class="fin-line"><span class="fin-inner">Let’s start</span></span>
+        <span class="fin-line"><span class="fin-inner">the <em>brief.</em></span></span>
+      </h2>
+      <div class="finale-ctas">
+        <a class="btn-ring" href="mailto:Youssef.ajlan@gmail.com?subject=Book%20a%20call%20—%20automation%20scoping" data-cursor="cta">
+          <span class="btn-ring-fill"></span><span class="btn-ring-txt mono">BOOK A CALL</span>
+        </a>
+        <a class="btn-ring btn-ring-ghost" href="mailto:Youssef.ajlan@gmail.com" data-cursor="cta">
+          <span class="btn-ring-fill"></span><span class="btn-ring-txt mono">DROP AN EMAIL</span>
+        </a>
+      </div>
+      <div class="finale-foot">
+        <span class="mono">©2026 — YOUSSEF AYLAN</span>
+        <div class="finale-socials mono">
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener" data-cursor="hover">LINKEDIN</a>
+          <a href="https://briefofthefuture.substack.com" target="_blank" rel="noopener" data-cursor="hover">SUBSTACK</a>
+        </div>
+        <span class="mono finale-mark">BRIEF <b>OF THE</b> FUTURE</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ═══ Liquid-glass refraction filter ═══
+       Referenced from CSS as backdrop-filter: url(#glass-warp). The turbulence
+       is blurred into a smooth gradient, then used to displace the backdrop —
+       that bending is what reads as thick glass rather than flat blur. -->
+  <svg class="glass-defs" aria-hidden="true" focusable="false" width="0" height="0">
+    <defs>
+      <filter id="glass-warp" color-interpolation-filters="sRGB"
+              x="-50%" y="-50%" width="200%" height="200%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05"
+                      numOctaves="1" seed="1" result="turbulence"/>
+        <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise"/>
+        <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="60"
+                           xChannelSelector="R" yChannelSelector="B" result="displaced"/>
+        <feGaussianBlur in="displaced" stdDeviation="4" result="finalBlur"/>
+        <feComposite in="finalBlur" in2="finalBlur" operator="over"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
+  <script src="js/laser-flow.js?v=20260721a"></script>
+  <script src="js/splash-cursor.js?v=20260721a"></script>
+  <script src="js/lamp-alpha.js?v=20260719e"></script>
+  <script src="js/main.js?v=20260722h"></script>
+  <script src="js/magic-bento.js?v=20260721a"></script>
+  <script src="js/line-sidebar.js?v=20260727a"></script>
+  <script src="js/variable-proximity.js?v=20260721a"></script>
+  <script src="js/process-map.js?v=20260727f"></script>
+</body>
+</html>
