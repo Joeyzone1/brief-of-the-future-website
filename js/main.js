@@ -355,13 +355,6 @@
             duration: 0.44,
             ease: 'power2.inOut'
           }, 'dock')
-          // overlay type scales down with the frame; eyebrow bows out
-          .to('.film-eyebrow', { autoAlpha: 0, duration: 0.1, ease: 'power1.out' }, 'dock')
-          .to('#film-overlay-inner', {
-            scale: () => Math.max(shot().width / window.innerWidth, 0.3),
-            duration: 0.44,
-            ease: 'power2.inOut'
-          }, 'dock')
           // copy rises from the gallery floor
           .fromTo('#film-copy',
             { y: 60, autoAlpha: 0 },
