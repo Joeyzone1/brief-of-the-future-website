@@ -25,6 +25,12 @@
 
   gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin);
 
+  /* Phones fire a resize every time the address bar slides away, which makes
+     ScrollTrigger re-measure and every pinned section jump mid-scroll. There
+     are four pinned set-pieces now, so that jitter reads as the whole page
+     stuttering. Height-only resizes are ignored; a real rotation still refreshes. */
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
   /* ── Measure pinned sections in page order ────────────────────
      Three sections pin: #film, #services, #statement. Each one's pin-spacer
      adds page height, so anything below it must be measured AFTER it.
@@ -292,9 +298,13 @@
           golden screen as the gallery reveals itself behind it ───── */
     const film = document.getElementById('film');
     if (film) {
-      if (reduceMotion || window.innerWidth < 900) {
+      if (reduceMotion) {
         film.classList.add('film-static');
       } else {
+       const filmMM = gsap.matchMedia();
+
+       /* Desktop: the film docks into the museum's golden screen. */
+       filmMM.add('(min-width: 900px)', () => {
         const frame = document.getElementById('film-frame');
         const screenEl = document.getElementById('museum-screen');
 
@@ -357,6 +367,43 @@
             { y: 60, autoAlpha: 0 },
             { y: 0, autoAlpha: 1, duration: 0.16, ease: 'power3.out' }, 'dock+=0.36')
           .to({}, { duration: 0.14 }); // settle before unpin
+       });
+
+       /* Phones don't get a lesser version of this — they get a different shot.
+          The museum plate is sized max(100vw, 177.7vh), which at 375×812 is
+          1443px wide, so the golden screen it docks into sits well off-canvas:
+          the docking move cannot be framed on a phone at all. Same beat,
+          restaged — the film opens from an inset card to full bleed, the title
+          card bows out, and the line rises into the space it leaves. */
+       filmMM.add('(max-width: 899px)', () => {
+        const frame = document.getElementById('film-frame');
+        gsap.set(frame, { scale: 0.84, borderRadius: 18, transformOrigin: '50% 50%' });
+
+        const tl = gsap.timeline({
+          defaults: { ease: 'power2.inOut' },
+          scrollTrigger: {
+            trigger: film,
+            start: 'top top',
+            end: '+=210%',
+            pin: true,
+            scrub: 1.2,
+            anticipatePin: 1,
+            invalidateOnRefresh: true
+          }
+        });
+        tl.to(frame, { scale: 1, borderRadius: 0, duration: 0.3, ease: 'power3.out' })
+          .to({}, { duration: 0.14 })                         // hold at full bleed
+          .to('#film-overlay-inner',
+            { y: -46, scale: 0.74, autoAlpha: 0.3, duration: 0.24 }, 'hand')
+          .fromTo('#film-copy',
+            { y: 54, autoAlpha: 0 },
+            { y: 0, autoAlpha: 1, duration: 0.24, ease: 'power3.out' }, 'hand+=0.08')
+          .to({}, { duration: 0.16 });                        // settle before unpin
+
+        /* gsap.set isn't part of the timeline, so matchMedia's auto-revert
+           won't undo it when the breakpoint flips (phone → rotated tablet). */
+        return () => gsap.set([frame, '#film-overlay-inner', '#film-copy'], { clearProps: 'all' });
+       });
       }
     }
 
@@ -469,12 +516,25 @@
       tl.to({}, { duration: 0.5 });   // breathing room after the last tier
       return () => gsap.set(tiers, { clearProps: 'all' });
     });
+    /* Phones can't pin this one: at 375px the section stands 1582px tall, so
+       holding it still would park two thirds of it off-screen. The tiers keep
+       their own scroll instead, and earn their entrance in pieces — card, then
+       its header line, then the examples — so each one arrives as a beat rather
+       than a single flat fade. */
     mm.add('(max-width: 900px), (max-height: 639px)', () => {
       gsap.utils.toArray('.atier').forEach(row => {
-        gsap.fromTo(row, { autoAlpha: 0, y: 60 }, {
-          autoAlpha: 1, y: 0, duration: 0.9, ease: 'power3.out',
-          scrollTrigger: { trigger: row, start: 'top 88%' }
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: row, start: 'top 86%', toggleActions: 'play none none reverse' }
         });
+        tl.fromTo(row,
+            { autoAlpha: 0, y: 64, scale: 0.97 },
+            { autoAlpha: 1, y: 0, scale: 1, duration: 0.85, ease: 'power3.out' })
+          .fromTo(row.querySelectorAll('.at-idx, .at-price'),
+            { autoAlpha: 0, x: -20 },
+            { autoAlpha: 1, x: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out' }, '-=0.52')
+          .fromTo(row.querySelectorAll('.at-examples li'),
+            { autoAlpha: 0, y: 16 },
+            { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.09, ease: 'power2.out' }, '-=0.34');
       });
     });
 
