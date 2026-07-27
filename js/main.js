@@ -369,42 +369,15 @@
           .to({}, { duration: 0.14 }); // settle before unpin
        });
 
-       /* Phones don't get a lesser version of this — they get a different shot.
-          The museum plate is sized max(100vw, 177.7vh), which at 375×812 is
-          1443px wide, so the golden screen it docks into sits well off-canvas:
-          the docking move cannot be framed on a phone at all. Same beat,
-          restaged — the film opens from an inset card to full bleed, the title
-          card bows out, and the line rises into the space it leaves. */
+       /* Phones: no scroll sequence at all. The museum dock can't be framed at
+          this width anyway (the plate is 1443px wide at 375px), and a pinned
+          restaging of it was more motion than the section wants on a phone —
+          the film is simply a card that plays, with the line underneath.
+          Same class the reduced-motion path uses; the CSS above squares it to
+          16:9 so nothing is cropped or letterboxed. */
        filmMM.add('(max-width: 899px)', () => {
-        const frame = document.getElementById('film-frame');
-        gsap.set(frame, { scale: 0.9, borderRadius: 18, transformOrigin: '50% 50%' });
-
-        const tl = gsap.timeline({
-          defaults: { ease: 'power2.inOut' },
-          scrollTrigger: {
-            trigger: film,
-            start: 'top top',
-            /* The phone shows a letterboxed 16:9 band, not a full-screen
-               plate — 210% of scrolling made it outstay its welcome. */
-            end: '+=140%',
-            pin: true,
-            scrub: 1.2,
-            anticipatePin: 1,
-            invalidateOnRefresh: true
-          }
-        });
-        tl.to(frame, { scale: 1, borderRadius: 0, duration: 0.3, ease: 'power3.out' })
-          .to({}, { duration: 0.14 })                         // hold at full bleed
-          .to('#film-overlay-inner',
-            { y: -46, scale: 0.74, autoAlpha: 0.3, duration: 0.24 }, 'hand')
-          .fromTo('#film-copy',
-            { y: 54, autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: 0.24, ease: 'power3.out' }, 'hand+=0.08')
-          .to({}, { duration: 0.16 });                        // settle before unpin
-
-        /* gsap.set isn't part of the timeline, so matchMedia's auto-revert
-           won't undo it when the breakpoint flips (phone → rotated tablet). */
-        return () => gsap.set([frame, '#film-overlay-inner', '#film-copy'], { clearProps: 'all' });
+        film.classList.add('film-static');
+        return () => film.classList.remove('film-static');
        });
       }
     }

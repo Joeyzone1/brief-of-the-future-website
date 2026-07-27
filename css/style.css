@@ -553,6 +553,29 @@ body.menu-open .menu-txt-close { transform: translateY(0); opacity: 1; }
   padding: 3rem clamp(1.5rem, 4vw, 4rem) 1rem;
 }
 
+/* Phones: no scroll sequence, so the film is a plain card. Squaring it to the
+   master's own 16:9 makes the video fill it exactly — no crop from cover, no
+   black bars from contain. The 62vh box above would leave the strip floating
+   in a tall black field, and width:100% + side margins would overhang the
+   screen. Must sit after those rules: same specificity, so order decides. */
+@media (max-width: 899px) {
+  .film-static .film-frame {
+    width: auto;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+  /* The card is sized for a full-screen plate. Left alone it stands 175px in a
+     193px frame and smothers the film, so it comes down to a caption. */
+  .film-static .film-overlay-inner {
+    padding: 0.7rem 1.1rem;
+    gap: 0.4rem;
+    border-radius: 12px;
+  }
+  .film-static .film-eyebrow { font-size: 0.58rem; letter-spacing: 0.12em; }
+  .film-static .film-word { font-size: 1.25rem; }
+  .film-static .film-sub { font-size: 0.78rem; }
+}
+
 /* ═══ Ring button ═══ */
 /* ═══ Liquid glass ═══
    Ported from the kokonutui liquid-glass component (React + Tailwind) to plain
