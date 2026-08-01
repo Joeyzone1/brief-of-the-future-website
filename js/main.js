@@ -128,6 +128,96 @@
       lazyVideos.forEach(v => v.querySelectorAll('source[data-src]').forEach(s => { s.src = s.dataset.src; v.load(); }));
     }
 
+    /* ── Film sound ──────────────────────────────────────────────
+       Two cuts of the same film. The section loops `film-loop`, which is
+       the last 46s with no audio: the full film opens on ten seconds of
+       near-black by design (act one is the busywork arriving on ink) and
+       landing there mid-scroll reads as a broken video. Turning the sound
+       on swaps in the whole scored film and plays it from the top.
+
+       The swap is a load(), never a seek. Seeking a lazily-loaded video to
+       an offset is what broke this the first time round: it either stalls
+       or lands a hair short and re-seeks forever, and both look identical
+       to a frozen picture. */
+    const soundBtn = document.getElementById('film-sound');
+    const filmVideo = document.querySelector('.film-video');
+    if (soundBtn && filmVideo) {
+      const label = document.getElementById('film-sound-label');
+
+      /* ── Keep-playing watchdog ──
+         The brief: the film runs the whole time it is on screen, and only
+         stops when you leave it.
+
+         Two different things stop it and nothing else restarts either. The
+         lazy-video observer calls pause() whenever a ScrollTrigger dock
+         transform makes the element look off screen. And a browser will
+         suspend muted, video-only media in a view that is not compositing
+         frames, which leaves the element reporting `paused === false`,
+         `readyState 4` and a full buffer while the clock sits still.
+
+         Watching `paused` catches the first and is blind to the second, so
+         this watches the clock. If time is not moving, the film is frozen,
+         whatever the element claims about itself. */
+      const kick = () => { const p = filmVideo.play(); if (p) p.catch(() => {}); };
+      let lastTime = -1;
+      let stalls = 0;
+      let rearms = 0;
+
+      setInterval(() => {
+        if (!filmVideo.dataset.loaded) return;
+
+        const r = filmVideo.getBoundingClientRect();
+        if (!(r.width > 0 && r.bottom > 0 && r.top < innerHeight)) {
+          lastTime = -1;          // off screen: stopping here is the point
+          stalls = 0;
+          return;
+        }
+
+        if (filmVideo.paused || filmVideo.currentTime === lastTime) {
+          stalls++;
+          kick();
+          /* Still frozen after five seconds of asking nicely: re-arm the
+             source once or twice. Capped, because if the browser is holding
+             it down, reloading on a loop only burns bandwidth. */
+          if (stalls >= 5 && rearms < 2) {
+            stalls = 0;
+            rearms++;
+            filmVideo.load();
+            kick();
+          }
+        } else {
+          stalls = 0;
+        }
+        lastTime = filmVideo.currentTime;
+      }, 1000);
+
+      // Coming back to the tab is the other moment it needs a push.
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && filmVideo.dataset.loaded) kick();
+      });
+
+      soundBtn.addEventListener('click', () => {
+        const turningOn = filmVideo.muted;
+
+        if (turningOn && !filmVideo.dataset.full) {
+          filmVideo.dataset.full = '1';
+          filmVideo.querySelectorAll('source[data-full]').forEach(s => {
+            s.src = s.dataset.full;
+          });
+          filmVideo.load(); // starts the scored cut at zero, no seek needed
+        }
+
+        filmVideo.muted = !turningOn;
+        soundBtn.toggleAttribute('data-on', turningOn);
+        label.textContent = turningOn ? 'SOUND OFF' : 'SOUND ON';
+        soundBtn.setAttribute(
+          'aria-label',
+          turningOn ? 'Mute the film' : 'Play the film with sound'
+        );
+        const p = filmVideo.play(); if (p) p.catch(() => {});
+      });
+    }
+
     document.querySelectorAll('.split-lines').forEach(splitIntoLines);
 
     /* ── Preloader ───────────────────────────────────────────── */

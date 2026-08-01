@@ -14,8 +14,9 @@ dist/
 build/
 .cache/
 
-# Superseded assets kept locally for reference
-assets/_superseded/
+# Superseded assets. Moved out of the site entirely on 1 Aug 2026 — they now
+# live in ../_archive/, outside this repo, so nothing here needs ignoring.
+# Kept as a reminder: retired files leave the site folder, they don't hide in it.
 
 # OS / editor junk
 .DS_Store

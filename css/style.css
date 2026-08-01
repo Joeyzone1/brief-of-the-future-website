@@ -462,6 +462,56 @@ body.menu-open .menu-txt-close { transform: translateY(0); opacity: 1; }
   background: rgba(21, 21, 21, 0.28);
   pointer-events: none;
 }
+/* Sound toggle. The film is scored, autoplay is only permitted while muted,
+   so this button is the only door the audio can come through. Borrows the
+   "System live" pill's language (.pn-end) so it reads as part of the set. */
+.film-sound {
+  position: absolute;
+  z-index: 4;
+  right: clamp(1rem, 3vw, 2.5rem);
+  bottom: clamp(1.8rem, 5.5vh, 4rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid rgba(201, 151, 99, 0.5);
+  border-radius: 999px;
+  background: rgba(21, 21, 21, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--gold-hi);
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.35s ease, background 0.35s ease, opacity 0.35s ease;
+}
+.film-sound:hover {
+  border-color: var(--gold);
+  background: rgba(201, 151, 99, 0.14);
+}
+.film-sound-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold-hi);
+  opacity: 0.32;
+}
+.film-sound[data-on] .film-sound-led {
+  opacity: 1;
+  animation: pn-blink 1.6s ease-in-out infinite;
+}
+/* Stacked phone layout: the frame is a card at the top of the section, so
+   the button rides its corner instead of the section's floor. */
+.film-static .film-sound {
+  top: clamp(1rem, 3vw, 2rem);
+  bottom: auto;
+  right: clamp(1.6rem, 4vw, 3rem);
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-sound[data-on] .film-sound-led { animation: none; }
+}
+
 .film-copy {
   position: absolute;
   z-index: 3;
